@@ -5,7 +5,6 @@
 
 /**
  * Define a function for initiating a conversation on installation
- * With custom integrations, we don't have a way to find out who installed us, so we can't message them :(
  */
 
 function onInstallation(bot, installer) {
@@ -26,44 +25,20 @@ function onInstallation(bot, installer) {
 }
 
 
-/**
- * Configure the persistence options
- */
-
 var config = require("./config");
-let controller_config = {};
+let controller_config = {
+  json_file_store: ((config.TOKEN) ? './db_slack_bot_ci/' :
+    './db_slack_bot_a/'), //use a different name if an app or CI
+};
 
-if (config.MONGOLAB_URI) {
-  var BotkitStorage = require('botkit-storage-mongo');
-  controller_config = {
-    storage: BotkitStorage({
-      mongoUri: config.MONGOLAB_URI
-    }),
-  };
-} else {
-  controller_config = {
-    json_file_store: ((config.TOKEN) ? './db_slack_bot_ci/' :
-      './db_slack_bot_a/'), //use a different name if an app or CI
-  };
-}
-
-/**
- * Are being run as an app or a custom integration? The initialization will differ, depending
- */
-
-if (config.TOKEN || config.SLACK_TOKEN) {
-  //Treat this as a custom integration
-  var customIntegration = require('./lib/custom_integrations');
-  var token = (config.TOKEN) ? config.TOKEN : config.SLACK_TOKEN;
-  var controller = customIntegration.configure(token, controller_config, onInstallation);
-} else if (config.CLIENT_ID && config.CLIENT_SECRET && config.PORT) {
+if (config.CLIENT_ID && config.CLIENT_SECRET && config.PORT) {
   //Treat this as an app
   var app = require('./lib/apps');
   var controller = app.configure(config.PORT, config.CLIENT_ID,
     config.CLIENT_SECRET, controller_config, onInstallation);
 } else {
   console.error(
-    'Error: If this is a custom integration, please specify TOKEN in the configuration file. If this is an app, please specify CLIENT_ID, CLIENT_SECRET, and PORT in the configuration file'
+    'Error: Please specify CLIENT_ID, CLIENT_SECRET, and PORT in the configuration file'
   );
   process.exit(1);
 }
