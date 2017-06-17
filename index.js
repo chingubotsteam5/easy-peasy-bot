@@ -62,8 +62,8 @@ if (config.TOKEN || config.SLACK_TOKEN) {
   var controller = app.configure(config.PORT, config.CLIENT_ID,
     config.CLIENT_SECRET, config, onInstallation);
 } else {
-  console.log(
-    'Error: If this is a custom integration, please specify TOKEN in the environment. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment'
+  console.error(
+    'Error: If this is a custom integration, please specify TOKEN in the configuration file. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the configuration file'
   );
   process.exit(1);
 }
