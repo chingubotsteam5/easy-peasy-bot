@@ -31,6 +31,7 @@ function onInstallation(bot, installer) {
  */
 
 var config = require("./config");
+console.log(config);
 
 if (config.MONGOLAB_URI) {
   var BotkitStorage = require('botkit-storage-mongo');
@@ -63,7 +64,7 @@ if (config.TOKEN || config.SLACK_TOKEN) {
     config.CLIENT_SECRET, config, onInstallation);
 } else {
   console.error(
-    'Error: If this is a custom integration, please specify TOKEN in the configuration file. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the configuration file'
+    'Error: If this is a custom integration, please specify TOKEN in the configuration file. If this is an app, please specify CLIENT_ID, CLIENT_SECRET, and PORT in the configuration file'
   );
   process.exit(1);
 }

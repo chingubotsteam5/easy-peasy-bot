@@ -1,8 +1,8 @@
 let config = {};
 
-config.CLIENT_ID = "***REMOVED***";
-config.CLIENT_SECRET = "***REMOVED***";
-config.PORT = "8765";
+config.CLIENT_ID = "";
+config.CLIENT_SECRET = "";
+config.PORT = "";
 
 // config.TOKEN = "";
 // config.SLACK_TOKEN = "";
