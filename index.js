@@ -31,17 +31,17 @@ function onInstallation(bot, installer) {
  */
 
 var config = require("./config");
-console.log(config);
+let controller_config = {};
 
 if (config.MONGOLAB_URI) {
   var BotkitStorage = require('botkit-storage-mongo');
-  config = {
+  controller_config = {
     storage: BotkitStorage({
       mongoUri: config.MONGOLAB_URI
     }),
   };
 } else {
-  config = {
+  controller_config = {
     json_file_store: ((config.TOKEN) ? './db_slack_bot_ci/' :
       './db_slack_bot_a/'), //use a different name if an app or CI
   };
@@ -51,17 +51,16 @@ if (config.MONGOLAB_URI) {
  * Are being run as an app or a custom integration? The initialization will differ, depending
  */
 
-
 if (config.TOKEN || config.SLACK_TOKEN) {
   //Treat this as a custom integration
   var customIntegration = require('./lib/custom_integrations');
   var token = (config.TOKEN) ? config.TOKEN : config.SLACK_TOKEN;
-  var controller = customIntegration.configure(token, config, onInstallation);
+  var controller = customIntegration.configure(token, controller_config, onInstallation);
 } else if (config.CLIENT_ID && config.CLIENT_SECRET && config.PORT) {
   //Treat this as an app
   var app = require('./lib/apps');
   var controller = app.configure(config.PORT, config.CLIENT_ID,
-    config.CLIENT_SECRET, config, onInstallation);
+    config.CLIENT_SECRET, controller_config, onInstallation);
 } else {
   console.error(
     'Error: If this is a custom integration, please specify TOKEN in the configuration file. If this is an app, please specify CLIENT_ID, CLIENT_SECRET, and PORT in the configuration file'
