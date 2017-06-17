@@ -29,3 +29,5 @@ build/Release
 node_modules
 
 config.js
+db_slack_bot_ci
+db_slack_bot_a
