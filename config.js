@@ -2,7 +2,7 @@ let config = {};
 
 config.CLIENT_ID = "";
 config.CLIENT_SECRET = "";
-config.PORT = "";
+config.PORT = 0;
 
 // config.TOKEN = "";
 // config.SLACK_TOKEN = "";
