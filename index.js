@@ -29,18 +29,17 @@ function onInstallation(bot, installer) {
 
 var config = require("./config");
 
-if (config.CLIENT_ID && config.CLIENT_SECRET && config.PORT) {
-  var app = require('./lib/apps');
-  var controller = app.configure(config.PORT, config.CLIENT_ID,
-    config.CLIENT_SECRET, {
-      json_file_store: './db_slack_bot_a/'
-    }, onInstallation);
-} else {
+if (!config.CLIENT_ID || !config.CLIENT_SECRET || !config.PORT) {
   console.error(
-    'Error: Please specify CLIENT_ID, CLIENT_SECRET, and PORT in the configuration file'
-  );
+    'Error: Please specify CLIENT_ID, CLIENT_SECRET, and PORT in config.js');
   process.exit(1);
 }
+
+var app = require('./lib/apps');
+var controller = app.configure(config.PORT, config.CLIENT_ID,
+  config.CLIENT_SECRET, {
+    json_file_store: './db_slack_bot_a/'
+  }, onInstallation);
 
 
 /**
