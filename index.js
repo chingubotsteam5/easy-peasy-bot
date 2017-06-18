@@ -26,16 +26,13 @@ function onInstallation(bot, installer) {
 
 
 var config = require("./config");
-let controller_config = {
-  json_file_store: ((config.TOKEN) ? './db_slack_bot_ci/' :
-    './db_slack_bot_a/'), //use a different name if an app or CI
-};
 
 if (config.CLIENT_ID && config.CLIENT_SECRET && config.PORT) {
-  //Treat this as an app
   var app = require('./lib/apps');
   var controller = app.configure(config.PORT, config.CLIENT_ID,
-    config.CLIENT_SECRET, controller_config, onInstallation);
+    config.CLIENT_SECRET, {
+      json_file_store: './db_slack_bot_a/'
+    }, onInstallation);
 } else {
   console.error(
     'Error: Please specify CLIENT_ID, CLIENT_SECRET, and PORT in the configuration file'
