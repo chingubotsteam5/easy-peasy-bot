@@ -4,9 +4,9 @@
  * A Bot for Slack!
  */
 
-var Botkit = require('botkit');
+let Botkit = require('botkit');
 
-var _bots = {};
+let _bots = {};
 
 /**
  * Define a function for initiating a conversation on installation
@@ -30,8 +30,8 @@ function onInstallation(bot, installer) {
 }
 
 
-var config = require("./config");
-var botkit_config = {
+const config = require("./config");
+const botkit_config = {
   json_file_store: './db_slack_bot_a/'
 };
 
@@ -41,7 +41,7 @@ if (!config.CLIENT_ID || !config.CLIENT_SECRET || !config.PORT) {
   process.exit(1);
 }
 
-var controller = Botkit.slackbot(botkit_config).configureSlackApp({
+let controller = Botkit.slackbot(botkit_config).configureSlackApp({
   clientId: config.CLIENT_ID,
   clientSecret: config.CLIENT_SECRET,
   scopes: ['bot'], //TODO it would be good to move this out a level, so it can be configured at the root level
@@ -84,9 +84,9 @@ controller.storage.teams.all(function (err, teams) {
   }
 
   // connect all teams with bots up to slack!
-  for (var t in teams) {
+  for (let t in teams) {
     if (teams[t].bot) {
-      var bot = controller.spawn(teams[t]).startRTM(function (err) {
+      let bot = controller.spawn(teams[t]).startRTM(function (err) {
         if (err) {
           console.log('Error connecting bot to Slack:', err);
         } else {
@@ -107,14 +107,8 @@ controller.storage.teams.all(function (err, teams) {
  * TODO: fixed b0rked reconnect behavior
  */
 // Handle events related to the websocket connection to Slack
-controller.on('rtm_open', function (bot) {
-  console.log('** The RTM api just connected!');
-});
-
-controller.on('rtm_close', function (bot) {
-  console.log('** The RTM api just closed');
-  // you may want to attempt to re-open
-});
+controller.on('rtm_open', (bot) => console.log('** The RTM api just connected!'));
+controller.on('rtm_close', (bot) => console.log('** The RTM api just closed'));
 
 
 /**
@@ -122,13 +116,10 @@ controller.on('rtm_close', function (bot) {
  */
 // BEGIN EDITING HERE!
 
-controller.on('bot_channel_join', function (bot, message) {
-  bot.reply(message, "I'm here!")
-});
-
-controller.hears('hello', 'direct_message', function (bot, message) {
-  bot.reply(message, 'Hello!');
-});
+controller.on('bot_channel_join', (bot, message) => bot.reply(message,
+  "I'm here!"));
+controller.hears('hello', 'direct_message', (bot, message) => bot.reply(message,
+  'Hello!'));
 
 
 /**
