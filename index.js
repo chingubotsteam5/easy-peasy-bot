@@ -4,6 +4,9 @@
  * A Bot for Slack!
  */
 
+var Botkit = require('botkit');
+
+var _bots = {};
 
 /**
  * Define a function for initiating a conversation on installation
@@ -28,6 +31,9 @@ function onInstallation(bot, installer) {
 
 
 var config = require("./config");
+var botkit_config = {
+  json_file_store: './db_slack_bot_a/'
+};
 
 if (!config.CLIENT_ID || !config.CLIENT_SECRET || !config.PORT) {
   console.error(
@@ -35,11 +41,61 @@ if (!config.CLIENT_ID || !config.CLIENT_SECRET || !config.PORT) {
   process.exit(1);
 }
 
-var app = require('./lib/apps');
-var controller = app.configure(config.PORT, config.CLIENT_ID,
-  config.CLIENT_SECRET, {
-    json_file_store: './db_slack_bot_a/'
-  }, onInstallation);
+var controller = Botkit.slackbot(botkit_config).configureSlackApp({
+  clientId: config.CLIENT_ID,
+  clientSecret: config.CLIENT_SECRET,
+  scopes: ['bot'], //TODO it would be good to move this out a level, so it can be configured at the root level
+});
+
+controller.setupWebserver(config.PORT, function (err, webserver) {
+  controller.createWebhookEndpoints(controller.webserver);
+
+  controller.createOauthEndpoints(controller.webserver, function (
+    err, req, res) {
+    if (err) {
+      res.status(500).send('ERROR: ' + err);
+    } else {
+      res.send('Success!');
+    }
+  });
+});
+
+controller.on('create_bot', function (bot, config) {
+  if (_bots[bot.config.token]) {
+    // already online! do nothing.
+  } else {
+    bot.startRTM(function (err) {
+      if (err) {
+        console.log(err);
+        process.exit(1);
+      }
+
+      _bots[bot.config.token] = bot;
+
+      if (onInstallation)
+        onInstallation(bot, config.createdBy);
+    });
+  }
+});
+
+controller.storage.teams.all(function (err, teams) {
+  if (err) {
+    throw new Error(err);
+  }
+
+  // connect all teams with bots up to slack!
+  for (var t in teams) {
+    if (teams[t].bot) {
+      var bot = controller.spawn(teams[t]).startRTM(function (err) {
+        if (err) {
+          console.log('Error connecting bot to Slack:', err);
+        } else {
+          _bots[bot.config.token] = bot;
+        }
+      });
+    }
+  }
+});
 
 
 /**
