@@ -1,7 +1,7 @@
 {
   "name": "test-bot",
   "version": "1.0.0",
-  "description": "The awesomest bot evar.",
+  "description": "Bleep bloop bleep.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -15,7 +15,7 @@
     "slack",
     "bot"
   ],
-  "author": "D.E. Goodman-Wilson",
+  "author": "Simon Morgan <sjm@sjm.io> (https://sjm.io/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/chingubotsteam5/easy-peasy-bot/issues"
@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "botkit": "0.2.2",
-    "botkit-storage-mongo": "^1.0.2",
-    "mongodb": "^1.4.39"
+    "botkit-storage-mongo": "^1.0.2"
   }
 }
