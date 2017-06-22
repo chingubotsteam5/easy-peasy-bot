@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  * A Bot for Slack!
  */
