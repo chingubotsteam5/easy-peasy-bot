@@ -2,6 +2,8 @@
  * A Bot for Slack!
  */
 
+require('dotenv').config();
+
 let Botkit = require('botkit');
 
 let _bots = {};
@@ -28,24 +30,23 @@ function onInstallation(bot, installer) {
 }
 
 
-const config = require("./config");
 const botkit_config = {
   json_file_store: './db_slack_bot_a/'
 };
 
-if (!config.CLIENT_ID || !config.CLIENT_SECRET || !config.PORT) {
+if (!process.env.CLIENT_ID || !process.env.CLIENT_SECRET || !process.env.PORT) {
   console.error(
     'Error: Please specify CLIENT_ID, CLIENT_SECRET, and PORT in config.js');
   process.exit(1);
 }
 
 let controller = Botkit.slackbot(botkit_config).configureSlackApp({
-  clientId: config.CLIENT_ID,
-  clientSecret: config.CLIENT_SECRET,
+  clientId: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
   scopes: ['bot'], //TODO it would be good to move this out a level, so it can be configured at the root level
 });
 
-controller.setupWebserver(config.PORT, function (err, webserver) {
+controller.setupWebserver(process.env.PORT, function (err, webserver) {
   controller.createWebhookEndpoints(controller.webserver);
 
   controller.createOauthEndpoints(controller.webserver, function (
